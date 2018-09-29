@@ -18,3 +18,16 @@ make run
 
 ## Contributing
 Please refer to the [developer guide](./docs/DEVELOPER.md) and [contribution guide](./docs/CONTRIBUTING.md) to learn how the backend is structured.
+
+## Architecture
+config: Configuration files and requirements.
+
+docs: Documentation and example database.
+
+project/api/migrations: Auto-generated migration classes?
+
+project/api: REST API and a test file (how/why do we run the test)?  Defines the Nation, Territory, and DiplomaticRelation classes, which are our primary database items.
+
+project/interactivemap: Django settings and website directory layout?
+
+project: Django execution wrapper.
