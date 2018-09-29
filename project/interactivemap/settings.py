@@ -26,7 +26,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET', 'dummy')
+try:
+    SECRET_KEY = os.environ['SECRET']
+except KeyError as e:
+    print('No key SECRET in env. Did you include django.env in your environ?')
+    SECRET_KEY = 'dummy'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -101,7 +105,7 @@ DATABASES = {
         'NAME': 'postgres',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
-        'HOST': 'db',
+        'HOST': 'localhost',
         'PORT': 5432,
     }
 }
@@ -162,10 +166,8 @@ CORS_ORIGIN_WHITELIST = (
     'interactivemap-frontend-*.now.sh',
 )
 
-AUTH0_DOMAIN = os.environ.get('AUTH0_DOMAIN', 'chronoscio.auth0.com')
-API_IDENTIFIER = os.environ.get('API_IDENTIFIER', 'https://chronoscio.org/')
-AUTH0_CLIENT_ID = os.environ.get('AUTH0_CLIENT_ID', '')
-AUTH0_CLIENT_SECRET = os.environ.get('AUTH0_CLIENT_SECRET', '')
+AUTH0_DOMAIN = os.environ.get('AUTH0_DOMAIN')
+API_IDENTIFIER = os.environ.get('API_IDENTIFIER')
 PUBLIC_KEY = None
 JWT_ISSUER = None
 
