@@ -46,7 +46,7 @@ AUTH0_DOMAIN={PROJECT.auth0.com}
 AUTH0_CLIENT_ID={Client ID}
 AUTH0_CLIENT_SECRET={Client Secret}
 ```
-4) Install and run [Postgresql](https://www.postgresql.org/docs/9.3/static/tutorial-install.html) (AKA postgres) locally. You should not need to worry about creating any accounts or doing any setup but you may need to debug OS-specific problems that appear. For example, you may need to install postgis as well. (TODO: Test this on wiped setups to find out specific steps to do this properly.)
+4) Install and run [Postgresql](https://www.postgresql.org/docs/9.3/static/tutorial-install.html) (AKA postgres) locally. You should not need to worry about creating any accounts. You will also need to make sure you have set up [geodjango](https://docs.djangoproject.com/en/2.1/ref/contrib/gis/install/).  (TODO: Test this on wiped setups to find out specific steps to do this properly.)
 5) Change the HOST variable in the [settings.py](https://github.com/chronoscio/backend/blob/master/project/interactivemap/settings.py) file to be `localhost` instead of `db`. You may also need to change the PORT variable to match whatever you have set for postgis (TODO: investigate this).
 6) Prepare a json dataset to be the database. For now, you can use our example test data.
 ```bash
@@ -54,7 +54,7 @@ mv docs/example_db_dump.json project/db.json
 ```
 7) Migrate and run the server with django.
 ```bash
-# Migrate the project.
+# Run SQL migrations.
 python project/manage.py migrate
 
 # Run the server.
@@ -81,9 +81,9 @@ project/api/migrations: Auto-generated migration classes?
 
 project/api: REST API and a test file (how/why do we run the test)?  Defines the Nation, Territory, and DiplomaticRelation classes, which are our primary database items.
 
-project/interactivemap: Django settings and website directory layout?
+project/interactivemap: Standard Django settings and website directory layout.
 
-project: Django execution wrapper.
+project: Standard Django aplication directory
 
 ## Contributing
 Please refer to the [developer guide](./docs/DEVELOPER.md) and [contribution guide](./docs/CONTRIBUTING.md) to learn more about how we structure the backend. We try to centralize most important discussion in PRs and Issues.
