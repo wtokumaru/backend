@@ -34,15 +34,24 @@ source venv/bin/activate
 
 # Install the project requirements manually.
 pip install -r config/requirements.txt
+
+# Create env files and note that you will need to modify them later.
+mv django.env.sample django.env
+mv postgres.env.sample postgres.env
 ```
-2) Install and run [Postgresql](https://www.postgresql.org/docs/9.3/static/tutorial-install.html) (AKA postgres) locally. You should not need to worry about creating any accounts or doing any setup but you may need to debug OS-specific problems that appear. For example, you may need to install postgis as well. (TODO: Test this on wiped setups to find out specific steps to do this properly.)
-3) Change the HOST variable in the [settings.py](https://github.com/chronoscio/backend/blob/master/project/interactivemap/settings.py) file to be `localhost` instead of `db`. You may also need to change the PORT variable to match whatever you have set for postgis (TODO: investigate this).
-4) Prepare a json dataset fto be the database. For now, you can use our example test data.
+2) Create an SPA (Single Page Application) at https://manage.auth0.com/#/applications.
+3) Go to the Settings of your SPA put your Client ID and Client Secret into `django.env`.
+```
+AUTH0_CLIENT_ID={Client ID}
+AUTH0_CLIENT_SECRET={Client Secret}
+```
+4) Install and run [Postgresql](https://www.postgresql.org/docs/9.3/static/tutorial-install.html) (AKA postgres) locally. You should not need to worry about creating any accounts or doing any setup but you may need to debug OS-specific problems that appear. For example, you may need to install postgis as well. (TODO: Test this on wiped setups to find out specific steps to do this properly.)
+5) Change the HOST variable in the [settings.py](https://github.com/chronoscio/backend/blob/master/project/interactivemap/settings.py) file to be `localhost` instead of `db`. You may also need to change the PORT variable to match whatever you have set for postgis (TODO: investigate this).
+6) Prepare a json dataset to be the database. For now, you can use our example test data.
 ```bash
 mv docs/example_db_dump.json project/db.json
 ```
-
-5) Migrate and run the server with django.
+7) Migrate and run the server with django.
 ```bash
 # Migrate the project.
 python project/manage.py migrate

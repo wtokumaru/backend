@@ -167,10 +167,10 @@ CORS_ORIGIN_WHITELIST = (
     'interactivemap-frontend-*.now.sh',
 )
 
-AUTH0_DOMAIN = os.environ.get('AUTH0_DOMAIN', 'chronoscio.auth0.com')
+AUTH0_DOMAIN = os.environ.get('AUTH0_DOMAIN')
 API_IDENTIFIER = os.environ.get('API_IDENTIFIER', 'https://chronoscio.org/')
-AUTH0_CLIENT_ID = os.environ.get('AUTH0_CLIENT_ID', '')
-AUTH0_CLIENT_SECRET = os.environ.get('AUTH0_CLIENT_SECRET', '')
+AUTH0_CLIENT_ID = os.environ.get('AUTH0_CLIENT_ID')
+AUTH0_CLIENT_SECRET = os.environ.get('AUTH0_CLIENT_SECRET')
 PUBLIC_KEY = None
 JWT_ISSUER = None
 
