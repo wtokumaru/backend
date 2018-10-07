@@ -50,9 +50,17 @@ python project/manage.py migrate
 # Run the server.
 python3 project/manage.py runserver
 ```
+You should see a terminal output similar to this:
+```
+Performing system checks...
 
-## Contributing
-Please refer to the [developer guide](./docs/DEVELOPER.md) and [contribution guide](./docs/CONTRIBUTING.md) to learn how the backend is structured.
+System check identified no issues (0 silenced).
+January 01, 2018 - 00:00:00
+Django version 2.0.7, using settings 'interactivemap.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+```
+Then go to `http://localhost:8000/admin/` to see the Django administration panel. You should now be able to add Nations or Territories to the API and should see an Auth token after setting up your authetication (see developer guide). Try making an arbitrary Nation and then a Territory for that nation. Be sure to use the polygon outline tool when drawing on the Territory mapper. You will need to zoom out to see the world map properly as it starts fully zoomed in above the Atlantic Ocean (0, 0 coordinates).
 
 ## Architecture
 config: Configuration files and requirements.
@@ -66,3 +74,6 @@ project/api: REST API and a test file (how/why do we run the test)?  Defines the
 project/interactivemap: Django settings and website directory layout?
 
 project: Django execution wrapper.
+
+## Contributing
+Please refer to the [developer guide](./docs/DEVELOPER.md) and [contribution guide](./docs/CONTRIBUTING.md) to learn more about how we structure the backend. We try to centralize most important discussion in PRs and Issues.

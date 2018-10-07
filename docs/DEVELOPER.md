@@ -29,9 +29,11 @@ which provides us with a stateless JWT which can be validated through their serv
 [access token](https://auth0.com/docs/tokens/access-token) is required to be passed to the
 backend. You can run tests locally with your own Auth0 configuration as follows:
 
-1. Log into https://manage.auth0.com/#/applications
-2. Create Application > All Scopes > Authorize
-3. See the `client_id`, `client_secret`, and `audience` variables in the example cURL
+1. Log into https://manage.auth0.com/#/applications. It does not matter what names you select.
+2. Create Application > All Scopes > Authorize. Or just create a SPA (Single Page Application).
+3. See the `client_id`, `client_secret`, and `audience` variables in the example cURL.
+
+You should not have to do anything with this information, just make sure that it exists.
 
 ### Database
 
