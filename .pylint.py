@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-# TODO: Explain usage here?  Why do we need both pylint and pep8?
+# Pylint is a tool to lint (style) python code.
+# Github uses this file for Continuous Integration.
 
 import os
 import subprocess

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-# TODO: Explain usage here?  Why do we need both pylint and pep8?
+# Autopep8 is a tool to automatically format python code according to the PEP8
+# standards.  Github uses this file for Continuous Integration.
 
 import os
 import subprocess
