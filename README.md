@@ -41,7 +41,7 @@ mv postgres.env.sample postgres.env
 ```
 2) Create an SPA (Single Page Application) at https://manage.auth0.com/#/applications.
 3) Go to the Settings of your SPA put your Client ID and Client Secret into `django.env` along with the website domain.
-```
+```bash
 AUTH0_DOMAIN={PROJECT.auth0.com}
 AUTH0_CLIENT_ID={Client ID}
 AUTH0_CLIENT_SECRET={Client Secret}
