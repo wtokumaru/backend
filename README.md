@@ -16,6 +16,7 @@ make run
 # Navigate to http://localhost/, if you get a 502 error postgres likely has not been initialized yet,
 #   try again in a few seconds
 ```
+Use `docker-compose down` to stop hosting when you are done.
 
 ## Local Development
 1) Create a python virtualenv, activate it, and install the package requirements:
@@ -39,29 +40,35 @@ pip install -r config/requirements.txt
 mv django.env.sample django.env
 mv postgres.env.sample postgres.env
 ```
-2) Create an SPA (Single Page Application) at https://manage.auth0.com/#/applications.
+2) Create an SPA (Single Page Application) [here](https://manage.auth0.com/#/applications).
 3) Go to the Settings of your SPA put your Client ID and Client Secret into `django.env` along with the website domain.
 ```bash
+API_IDENTIFIER={IDENTIFIER}
 AUTH0_DOMAIN={PROJECT.auth0.com}
 AUTH0_CLIENT_ID={Client ID}
 AUTH0_CLIENT_SECRET={Client Secret}
 ```
-4) Install and run [Postgresql](https://www.postgresql.org/docs/9.3/static/tutorial-install.html) (AKA postgres) locally. You should not need to worry about creating any accounts. You will also need to make sure you have set up [geodjango](https://docs.djangoproject.com/en/2.1/ref/contrib/gis/install/).  (TODO: Test this on wiped setups to find out specific steps to do this properly.)
+4) Install and run [Postgresql](https://www.postgresql.org/docs/9.3/static/tutorial-install.html) (AKA postgres) locally. You should not need to worry about creating any accounts. You will also need to make sure you have set up [geodjango](https://docs.djangoproject.com/en/stable/contrib/gis/install/).  (TODO: Test this on wiped setups to find out specific steps to do this properly.)
 5) Change the HOST variable in the [settings.py](https://github.com/chronoscio/backend/blob/master/project/interactivemap/settings.py) file to be `localhost` instead of `db`. You may also need to change the PORT variable to match whatever you have set for postgis (TODO: investigate this).
 6) Prepare a json dataset to be the database. For now, you can use our example test data.
 ```bash
-mv docs/example_db_dump.json project/db.json
+cp docs/example_db_dump.json project/db.json
 ```
+If this is the first time you are using django, you must also create a user account to log in with.
+```bash
+python project/manage.py createsuperuser
+```
+Then follow the prompts to set a username, email, and password you will use when you navigate to `http://localhost:8000/admin/` later.
 7) Migrate and run the server with django.
 ```bash
 # Run SQL migrations.
 python project/manage.py migrate
 
 # Run the server.
-python3 project/manage.py runserver
+python project/manage.py runserver
 ```
 You should see a terminal output similar to this:
-```
+```bash
 Performing system checks...
 
 System check identified no issues (0 silenced).
