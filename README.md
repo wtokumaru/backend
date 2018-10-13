@@ -1,7 +1,7 @@
 # ChronoScio Backend [![Build Status](https://travis-ci.org/chronoscio/backend.svg?branch=master)](https://travis-ci.org/interactivemap/backend) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/0074e97bc13b476ea3eec279483d3cab)](https://www.codacy.com/app/whirish/backend?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=interactivemap/backend&amp;utm_campaign=Badge_Grade)
 
 ## Getting Started
-We normally use [Docker](https://en.wikipedia.org/wiki/Docker_(software)) to simplify installation and configuration. Docker makes virtual "containers" as images which allow us to isolate code we run and work around computer-specific weirdnesses. Docker should work on [Linux](https://docs.docker.com/install/linux/docker-ce/ubuntu/) or [macOS](https://docs.docker.com/docker-for-mac/install/) but requires Hyper-V, which is not available on Windows 10 Home edition. If you have trouble with setting up Docker, see the **Local Development** instructions below instead. Otherwise, it should be simple to get started:
+We normally use [Docker](https://en.wikipedia.org/wiki/Docker_(software)) to simplify installation and configuration. Docker makes virtual "containers" as images which allow us to isolate code we run and work around computer-specific weirdnesses. Docker should work on [Linux](https://docs.docker.com/install/linux/docker-ce/ubuntu/) or [macOS](https://docs.docker.com/docker-for-mac/install/) but requires Hyper-V, which is not available on Windows 10 Home edition. It does works on Windows 10 Pro 64 bit. If you have trouble with setting up Docker, see the **Local Development** instructions below instead. Otherwise, it should be simple to get started:
 ```bash
 # Clone the repo
 git clone https://github.com/chronoscio/backend
@@ -16,7 +16,7 @@ make run
 # Navigate to http://localhost/, if you get a 502 error postgres likely has not been initialized yet,
 #   try again in a few seconds
 ```
-Use `docker-compose down` to stop hosting when you are done.
+Use `make stop` or `make clean` to stop hosting when you are done.
 
 ## Local Development
 1) Create a python virtualenv, activate it, and install the package requirements:
@@ -44,12 +44,12 @@ mv postgres.env.sample postgres.env
 3) Go to the Settings of your SPA put your Client ID and Client Secret into `django.env` along with the website domain.
 ```bash
 API_IDENTIFIER={IDENTIFIER}
-AUTH0_DOMAIN={PROJECT.auth0.com}
-AUTH0_CLIENT_ID={Client ID}
-AUTH0_CLIENT_SECRET={Client Secret}
+AUTH0_DOMAIN={DOMAIN}
+AUTH0_CLIENT_ID={ID}
+AUTH0_CLIENT_SECRET={Secret}
 ```
 4) Install and run [Postgresql](https://www.postgresql.org/docs/9.3/static/tutorial-install.html) (AKA postgres) locally. You should not need to worry about creating any accounts. You will also need to make sure you have set up [geodjango](https://docs.djangoproject.com/en/stable/contrib/gis/install/).  (TODO: Test this on wiped setups to find out specific steps to do this properly.)
-5) Change the HOST variable in the [settings.py](https://github.com/chronoscio/backend/blob/master/project/interactivemap/settings.py) file to be `localhost` instead of `db`. You may also need to change the PORT variable to match whatever you have set for postgis (TODO: investigate this).
+5) Change the HOST variable in the [settings.py](https://github.com/chronoscio/backend/blob/master/project/interactivemap/settings.py) file to be `localhost` instead of `db` as you will be hosting locally. Set `AUTH0_DOMAIN` to `None` near the bottom of the file as well so that it is compatible with the other local hosting defaults. You may also need to change the PORT variable to match whatever you have set for postgis (TODO: investigate this).
 6) Prepare a json dataset to be the database. For now, you can use our example test data.
 ```bash
 cp docs/example_db_dump.json project/db.json
