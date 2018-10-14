@@ -1,6 +1,5 @@
 from json import loads, dumps
 
-from django.contrib.auth.models import User
 from django.contrib.gis.geos import GEOSGeometry
 from rest_framework import serializers
 
@@ -8,24 +7,21 @@ from .models import PoliticalEntity, Territory, DiplomaticRelation
 
 
 class PoliticalEntitySerializer(serializers.ModelSerializer):
-    """
-    Serializes the PoliticalEntity model
-    """
+    """Serializes the PoliticalEntity model."""
     class Meta:
         model = PoliticalEntity
         exclude = ('polymorphic_ctype',)
 
 
 class TerritorySerializer(serializers.ModelSerializer):
-    """
-    Serializes the Territory model as GeoJSON compatible data
-    """
+    """Serializes the Territory model as GeoJSON compatible data."""
     entity = serializers.SlugRelatedField(
         read_only=True,
         slug_field='url_id'
     )
 
     def to_internal_value(self, data):
+        """Converts data to GeoJSON."""
         ret = {}
 
         # Update ret to include passed in data
@@ -59,9 +55,7 @@ class TerritorySerializer(serializers.ModelSerializer):
 
 
 class DiplomaticRelationSerializer(serializers.ModelSerializer):
-    """
-    Serializes the DiplomaticRelation model
-    """
+    """Serializes the DiplomaticRelation model."""
     entity = serializers.SlugRelatedField(
         read_only=True,
         slug_field='url_id'

@@ -114,16 +114,20 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME': ('django.contrib.auth.password_validation.UserAttribute'
+                 'SimilarityValidator'),
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME': ('django.contrib.auth.password_validation.MinimumLength'
+                 'Validator'),
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME': ('django.contrib.auth.password_validation.CommonPassword'
+                 'Validator'),
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME': ('django.contrib.auth.password_validation.NumericPassword'
+                 'Validator'),
     },
 ]
 
@@ -183,7 +187,8 @@ if AUTH0_DOMAIN:
     # Add a line-break every 64 chars
     # https://stackoverflow.com/questions/2657693/insert-a-newline-character-every-64-characters-using-python
     body = re.sub("(.{64})", "\\1\n", jwks['keys'][0]['x5c'][0], 0, re.DOTALL)
-    cert = '-----BEGIN CERTIFICATE-----\n' + body + '\n-----END CERTIFICATE-----'
+    cert = ('-----BEGIN CERTIFICATE-----\n' + body +
+            '\n-----END CERTIFICATE-----')
     certificate = load_pem_x509_certificate(
         cert.encode('utf-8'), default_backend())
     PUBLIC_KEY = certificate.public_key()

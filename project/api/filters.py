@@ -18,10 +18,12 @@ class TerritoryFilter(FilterSet):
     )
 
     def filter_bounds(self, queryset, field_name, value):
+        """Check the geometry."""
         geom = Polygon(make_tuple(value), srid=4326)
         return queryset.filter(geo__intersects=geom)
 
     def filter_date(self, queryset, field_name, value):
+        """Check the time range."""
         return queryset.filter(start_date__lte=value, end_date__gte=value)
 
     class Meta:

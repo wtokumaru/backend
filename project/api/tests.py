@@ -8,14 +8,16 @@ from django.test import TestCase
 from django.core.exceptions import ValidationError
 from rest_framework import status
 from rest_framework.test import APITestCase
-from os import environ
 from .models import PoliticalEntity, Territory, DiplomaticRelation
-from .factories import PoliticalEntityFactory, TerritoryFactory, DiplomaticRelationFactory
-
-# https://stackoverflow.com/a/815160/
+from .factories import (PoliticalEntityFactory, TerritoryFactory,
+                        DiplomaticRelationFactory)
 
 
 def memoize(function):
+    """General-purpose memoization decorator.
+
+    From : https://stackoverflow.com/a/815160/
+    """
     memo = {}
 
     def wrapper(*args):
@@ -30,8 +32,9 @@ def memoize(function):
 
 
 @memoize
-def getUserToken(client_id=settings.AUTH0_CLIENT_ID,
+def getUserToken(client_id=settings.AUTH0_CLIENT_ID,  # noqa
                  client_secret=settings.AUTH0_CLIENT_SECRET):
+    """Autheticate for tests."""
     url = "https://" + settings.AUTH0_DOMAIN + "/oauth/token"
     headers = {"content-type": "application/json"}
     parameter = {
@@ -50,10 +53,8 @@ def getUserToken(client_id=settings.AUTH0_CLIENT_ID,
 
 class ModelTest(TestCase):
     @classmethod
-    def setUpTestData(cls):
-        """
-        Create basic model instances and test user
-        """
+    def setUpTestData(cls):  # noqa
+        """Create basic model instances and test user."""
         cls.new_nation = PoliticalEntityFactory(
             name="Test Nation",
             url_id="test_nation",
@@ -77,7 +78,7 @@ class ModelTest(TestCase):
             entity=cls.new_nation,
             references=["https://en.wikipedia.org/wiki/Test"],
             geo=GEOSGeometry(
-                '{"type": "MultiPolygon","coordinates": [[[ [102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0], [102.0, 2.0] ]],[[ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0] ],[ [100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2] ]]]}'
+                '{"type": "MultiPolygon","coordinates": [[[ [102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0], [102.0, 2.0] ]],[[ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0] ],[ [100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2] ]]]}'  # noqa
             ),
         )
         cls.diprel = DiplomaticRelationFactory(
@@ -90,9 +91,7 @@ class ModelTest(TestCase):
         cls.diprel.child_parties.add(cls.child_nation)
 
     def test_model_can_create_politicalentity(self):
-        """
-        Ensure that we can create politicalentities.
-        """
+        """Ensure that we can create politicalentities."""
         new_politicalentity = PoliticalEntity.objects.create(
             name="Test Nation2",
             url_id="test_nation2",
@@ -106,8 +105,9 @@ class ModelTest(TestCase):
                 url_id="test_nation2").exists())
 
     def test_model_can_create_territory(self):
-        """
-        Ensure that we can create territories. Specifically checks if we can create [start_date+1,end_date-1]
+        """Ensure that we can create territories.
+
+        Specifically checks if we can create [start_date+1,end_date-1].
         """
         politicalentity = PoliticalEntity.objects.get(url_id="test_nation")
         Territory.objects.create(
@@ -116,7 +116,7 @@ class ModelTest(TestCase):
             entity=politicalentity,
             references=["https://en.wikipedia.org/wiki/Test"],
             geo=GEOSGeometry(
-                '{"type": "MultiPolygon","coordinates": [[[ [102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0], [102.0, 2.0] ]],[[ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0] ],[ [100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2] ]]]}'
+                '{"type": "MultiPolygon","coordinates": [[[ [102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0], [102.0, 2.0] ]],[[ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0] ],[ [100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2] ]]]}'  # noqa
             ),
         )
         self.assertTrue(
@@ -131,7 +131,7 @@ class ModelTest(TestCase):
             entity=politicalentity,
             references=["https://en.wikipedia.org/wiki/Test"],
             geo=GEOSGeometry(
-                '{"type": "MultiPolygon","coordinates": [[[ [102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0], [102.0, 2.0] ]],[[ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0] ],[ [100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2] ]]]}'
+                '{"type": "MultiPolygon","coordinates": [[[ [102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0], [102.0, 2.0] ]],[[ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0] ],[ [100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2] ]]]}'  # noqa
             )
         )
         self.assertTrue(
@@ -141,9 +141,7 @@ class ModelTest(TestCase):
                 end_date="0006-12-31").exists())
 
     def test_model_can_not_create_territory(self):
-        """
-        Ensure that date checks work.
-        """
+        """Ensure that date checks work."""
         new_politicalentity = PoliticalEntity.objects.get(url_id="test_nation")
         with self.assertRaises(ValidationError):
             Territory.objects.create(
@@ -152,7 +150,7 @@ class ModelTest(TestCase):
                 entity=new_politicalentity,
                 references=["https://en.wikipedia.org/wiki/Test"],
                 geo=GEOSGeometry(
-                    '{"type": "MultiPolygon","coordinates": [[[ [102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0], [102.0, 2.0] ]],[[ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0] ],[ [100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2] ]]]}'
+                    '{"type": "MultiPolygon","coordinates": [[[ [102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0], [102.0, 2.0] ]],[[ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0] ],[ [100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2] ]]]}'  # noqa
                 )
             )
         with self.assertRaises(ValidationError):
@@ -162,7 +160,7 @@ class ModelTest(TestCase):
                 entity=new_politicalentity,
                 references=["https://en.wikipedia.org/wiki/Test"],
                 geo=GEOSGeometry(
-                    '{"type": "MultiPolygon","coordinates": [[[ [102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0], [102.0, 2.0] ]],[[ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0] ],[ [100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2] ]]]}'
+                    '{"type": "MultiPolygon","coordinates": [[[ [102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0], [102.0, 2.0] ]],[[ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0] ],[ [100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2] ]]]}'  # noqa
                 )
             )
         with self.assertRaises(ValidationError):
@@ -172,7 +170,7 @@ class ModelTest(TestCase):
                 entity=new_politicalentity,
                 references=["https://en.wikipedia.org/wiki/Test"],
                 geo=GEOSGeometry(
-                    '{"type": "MultiPolygon","coordinates": [[[ [102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0], [102.0, 2.0] ]],[[ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0] ],[ [100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2] ]]]}'
+                    '{"type": "MultiPolygon","coordinates": [[[ [102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0], [102.0, 2.0] ]],[[ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0] ],[ [100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2] ]]]}'  # noqa
                 )
             )
         with self.assertRaises(ValidationError):
@@ -182,17 +180,15 @@ class ModelTest(TestCase):
                 entity=new_politicalentity,
                 references=["https://en.wikipedia.org/wiki/Test"],
                 geo=GEOSGeometry(
-                    '{"type": "MultiPolygon","coordinates": [[[ [102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0], [102.0, 2.0] ]],[[ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0] ],[ [100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2] ]]]}'
+                    '{"type": "MultiPolygon","coordinates": [[[ [102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0], [102.0, 2.0] ]],[[ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0] ],[ [100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2] ]]]}'  # noqa
                 )
             )
 
 
 class APITest(APITestCase):
     @classmethod
-    def setUpTestData(cls):
-        """
-        Create basic model instances
-        """
+    def setUpTestData(cls):  # noqa
+        """Create basic model instances."""
         cls.new_nation = PoliticalEntityFactory(
             name="Test Nation",
             url_id="test_nation",
@@ -215,7 +211,7 @@ class APITest(APITestCase):
             entity=cls.new_nation,
             references=["https://en.wikipedia.org/wiki/Test"],
             geo=GEOSGeometry(
-                '{"type": "MultiPolygon","coordinates": [[[ [102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0], [102.0, 2.0] ]],[[ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0] ],[ [100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2] ]]]}'
+                '{"type": "MultiPolygon","coordinates": [[[ [102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0], [102.0, 2.0] ]],[[ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0] ],[ [100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2] ]]]}'  # noqa
             ),
         )
         cls.territory2 = TerritoryFactory(
@@ -224,7 +220,7 @@ class APITest(APITestCase):
             entity=cls.new_nation,
             references=["https://en.wikipedia.org/wiki/Test"],
             geo=GEOSGeometry(
-                '{"type": "MultiPolygon","coordinates": [[[ [102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0], [102.0, 2.0] ]],[[ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0] ]]]}'
+                '{"type": "MultiPolygon","coordinates": [[[ [102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0], [102.0, 2.0] ]],[[ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0] ]]]}'  # noqa
             ),
         )
         cls.diprel = DiplomaticRelationFactory(
@@ -236,10 +232,8 @@ class APITest(APITestCase):
         cls.diprel.parent_parties.add(cls.new_nation)
         cls.diprel.child_parties.add(cls.child_nation)
 
-    def test_api_can_create_PoliticalEntity(self):
-        """
-        Ensure we can create a new PoliticalEntity
-        """
+    def test_api_can_create_PoliticalEntity(self):  # noqa
+        """Ensure we can create a new PoliticalEntity."""
         url = reverse("politicalentity-list")
         data = {
             "name": "Created Test Nation",
@@ -258,7 +252,7 @@ class APITest(APITestCase):
                 pk=3).name,
             "Created Test Nation")
 
-    def test_api_can_create_territory_FC(self):
+    def test_api_can_create_territory_FC(self):  # noqa
         """
         Ensure we can create a new territory through
         a FeatureCollection
@@ -269,7 +263,7 @@ class APITest(APITestCase):
             "end_date": "0009-01-01",
             "entity": self.new_nation.id,
             "references": ["https://en.wikipedia.org/wiki/Test"],
-            "geo": '{"type": "FeatureCollection","features": [{"type": "Feature","id": "id0","geometry": {"type": "Polygon","coordinates": [[[100,0],[101,0],[101,1],[100,1],[100,0]]]},"properties": {"prop0": "value0","prop1": "value1"}},{"type": "Feature","properties": {},"geometry": {"type": "Polygon","coordinates": [[[101.22802734375,-1.043643455908483],[102.601318359375,-2.2516174965491453],[102.864990234375,-0.36254640877525024],[101.22802734375,-1.043643455908483]]]}}]}',
+            "geo": '{"type": "FeatureCollection","features": [{"type": "Feature","id": "id0","geometry": {"type": "Polygon","coordinates": [[[100,0],[101,0],[101,1],[100,1],[100,0]]]},"properties": {"prop0": "value0","prop1": "value1"}},{"type": "Feature","properties": {},"geometry": {"type": "Polygon","coordinates": [[[101.22802734375,-1.043643455908483],[102.601318359375,-2.2516174965491453],[102.864990234375,-0.36254640877525024],[101.22802734375,-1.043643455908483]]]}}]}',  # noqa
         }
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + getUserToken())
         response = self.client.post(url, data, format="json")
@@ -278,16 +272,14 @@ class APITest(APITestCase):
         self.assertEqual(Territory.objects.last().entity, self.new_nation)
 
     def test_api_can_create_territory(self):
-        """
-        Ensure we can create a new territory
-        """
+        """Ensure we can create a new territory."""
         url = reverse("territory-list")
         data = {
             "start_date": "0006-01-01",
             "end_date": "0007-01-01",
             "entity": self.new_nation.id,
             "references": ["https://en.wikipedia.org/wiki/Test"],
-            "geo": '{"type": "MultiPolygon","coordinates": [[[ [102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0], [102.0, 2.0] ]],[[ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0] ],[ [100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2] ]]]}',
+            "geo": '{"type": "MultiPolygon","coordinates": [[[ [102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0], [102.0, 2.0] ]],[[ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0] ],[ [100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2] ]]]}',  # noqa
         }
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + getUserToken())
         response = self.client.post(url, data, format="json")
@@ -295,17 +287,15 @@ class APITest(APITestCase):
         self.assertEqual(Territory.objects.count(), 3)
         self.assertEqual(Territory.objects.last().entity, self.new_nation)
 
-    def test_api_can_update_PoliticalEntity(self):
-        """
-        Ensure we can update individual PoliticalEntities
-        """
+    def test_api_can_update_PoliticalEntity(self):  # noqa
+        """Ensure we can update individual PoliticalEntities."""
         url = reverse("politicalentity-detail", args=["test_nation"])
         data = {
             "name": "Created Test Nation",
             "url_id": "created_test_nation",
             "color": "#ccffff",
             "references": ["https://en.wikipedia.org/wiki/Test"],
-            "geo": '{"type": "MultiPolygon","coordinates": [[[ [102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0], [102.0, 2.0] ]],[[ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0] ],[ [100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2] ]]]}',
+            "geo": '{"type": "MultiPolygon","coordinates": [[[ [102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0], [102.0, 2.0] ]],[[ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0] ],[ [100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2] ]]]}',  # noqa
         }
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + getUserToken())
         response = self.client.put(url, data, format="json")
@@ -313,43 +303,35 @@ class APITest(APITestCase):
         self.assertEqual(response.data["name"], "Created Test Nation")
 
     def test_api_can_update_territory(self):
-        """
-        Ensure we can update individual territories
-        """
+        """Ensure we can update individual territories."""
         url = reverse("territory-detail", args=[self.territory.id])
         data = {
             "start_date": "0010-01-01",
             "end_date": "0011-01-01",
             "entity": self.child_nation.id,
-            "geo": '{"type": "MultiPolygon","coordinates": [[[ [102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0], [102.0, 2.0] ]],[[ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0] ],[ [100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2] ]]]}',
+            "geo": '{"type": "MultiPolygon","coordinates": [[[ [102.0, 2.0], [103.0, 2.0], [103.0, 3.0], [102.0, 3.0], [102.0, 2.0] ]],[[ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0] ],[ [100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2] ]]]}',  # noqa
         }
         self.client.credentials(HTTP_AUTHORIZATION="Bearer " + getUserToken())
         response = self.client.put(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['entity'], self.child_nation.url_id)
 
-    def test_api_can_query_PoliticalEntities(self):
-        """
-        Ensure we can query for all PoliticalEntities
-        """
+    def test_api_can_query_PoliticalEntities(self):  # noqa
+        """Ensure we can query for all PoliticalEntities."""
         url = reverse("politicalentity-list")
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data[0]["name"], "Test Nation")
 
     def test_api_can_query_territories(self):
-        """
-        Ensure we can query for all territories
-        """
+        """Ensure we can query for all territories."""
         url = reverse("territory-list")
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data[0]["entity"], "test_nation")
 
     def test_api_can_query_territory(self):
-        """
-        Ensure we can query individual territories
-        """
+        """Ensure we can query individual territories."""
         url = reverse("territory-detail", args=[self.territory.id])
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -362,7 +344,8 @@ class APITest(APITestCase):
         """
         url = (
             reverse("territory-list") +
-            "?bounds=((0.0, 0.0), (0.0, 150.0), (150.0, 150.0), (150.0, 0.0), (0.0, 0.0))")
+            "?bounds=((0.0, 0.0), (0.0, 150.0), (150.0, 150.0), (150.0, 0.0)" +
+            ", (0.0, 0.0))")
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data[0]["entity"], "test_nation")
@@ -370,19 +353,18 @@ class APITest(APITestCase):
     def test_api_can_not_query_territories_bounds(self):
         """
         Ensure querying for bounds in which the PoliticalEntity does not
-        lie in fails
+        lie in fails.
         """
         url = (
             reverse("territory-list") +
-            "?bounds=((0.0, 0.0), (0.0, 50.0), (50.0, 50.0), (50.0, 0.0), (0.0, 0.0))")
+            "?bounds=((0.0, 0.0), (0.0, 50.0), (50.0, 50.0), (50.0, 0.0)," +
+            " (0.0, 0.0))")
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(not response.data)
 
     def test_api_can_query_territories_date(self):
-        """
-        Ensure we can query for territories with a date
-        """
+        """Ensure we can query for territories with a date."""
         url = reverse("territory-list") + "?date=0001-01-01"
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -391,26 +373,22 @@ class APITest(APITestCase):
     def test_api_can_not_query_territories_date(self):
         """
         Ensure querying for territories with an earlier start
-        date fails
+        date fails.
         """
         url = reverse("territory-list") + "?date=2020-01-01"
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(not response.data)
 
-    def test_api_can_query_PoliticalEntity(self):
-        """
-        Ensure we can query individual PoliticalEntities
-        """
+    def test_api_can_query_PoliticalEntity(self):  # noqa
+        """Ensure we can query individual PoliticalEntities."""
         url = reverse("politicalentity-detail", args=["test_nation"])
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["name"], "Test Nation")
 
     def test_api_can_query_territories_exclude(self):
-        """
-        Ensure we can exclude territories by id
-        """
+        """.Ensure we can exclude territories by id."""
         url = reverse("territory-list") + "?exclude_ids=" + \
             str(self.territory.id)
         response = self.client.get(url, format="json")
@@ -420,9 +398,7 @@ class APITest(APITestCase):
         self.assertTrue(not response.data)
 
     def test_api_can_create_diprel(self):
-        """
-        Ensure we can create a new DiplomaticRelation
-        """
+        """Ensure we can create a new DiplomaticRelation."""
         url = reverse("diplomaticrelation-list")
         data = {
             "start_date": "0001-01-01",
@@ -439,9 +415,7 @@ class APITest(APITestCase):
         self.assertEqual(DiplomaticRelation.objects.last().diplo_type, "A")
 
     def test_api_can_update_diprel(self):
-        """
-        Ensure we can update individual DipRels
-        """
+        """Ensure we can update individual DipRels."""
         url = reverse("diplomaticrelation-detail", args=[self.diprel.id])
         data = {
             "start_date": "0006-01-01",
@@ -457,18 +431,14 @@ class APITest(APITestCase):
         self.assertEqual(response.data["diplo_type"], "A")
 
     def test_api_can_query_diprels(self):
-        """
-        Ensure we can query for all DipRels
-        """
+        """Ensure we can query for all DipRels."""
         url = reverse("diplomaticrelation-list")
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data[0]["diplo_type"], "A")
 
     def test_api_can_query_diprel(self):
-        """
-        Ensure we can query individual DipRels
-        """
+        """Ensure we can query individual DipRels."""
         url = reverse("diplomaticrelation-detail", args=[self.diprel.id])
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
