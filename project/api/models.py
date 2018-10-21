@@ -13,8 +13,7 @@ from polymorphic.models import PolymorphicModel, PolymorphicManager
 class EntityManager(PolymorphicManager):
     """Manager for the Nation model to handle lookups by url_id."""
 
-    def get_by_natural_key(self, url_id):
-        """Returns attributes by the given url_id."""
+    def get_by_natural_key(self, url_id):  # noqa
         return self.get(url_id=url_id)
 
 
@@ -105,7 +104,8 @@ class Territory(models.Model):
     history = HistoricalRecords()
 
     def clean(self, *args, **kwargs):
-        """Ensure that the input data is valid."""
+        """Ensure that our geometry is a polygon and our dates do not intersect
+        with those of another Territory of the same Entity."""
         if self.start_date > self.end_date:
             raise ValidationError("Start date cannot be later than end date")
         if (
@@ -114,7 +114,7 @@ class Territory(models.Model):
         ):
             raise ValidationError(
                 "Only Polygon and MultiPolygon objects are acceptable geometry"
-                "types.")
+                " types.")
         try:
             # This date check is inculsive.
             if Territory.objects.filter(
@@ -131,8 +131,7 @@ class Territory(models.Model):
 
         super(Territory, self).clean(*args, **kwargs)
 
-    def save(self, *args, **kwargs):
-        """Save the Territory data."""
+    def save(self, *args, **kwargs):  # noqa
         self.full_clean()
         super(Territory, self).save(*args, **kwargs)
 
@@ -173,15 +172,13 @@ class DiplomaticRelation(models.Model):
 
     history = HistoricalRecords()
 
-    def clean(self, *args, **kwargs):
-        """Ensure that the input data is valid."""
+    def clean(self, *args, **kwargs):  # noqa
         if self.start_date > self.end_date:
             raise ValidationError("Start date cannot be later than end date")
 
         super(DiplomaticRelation, self).clean(*args, **kwargs)
 
-    def save(self, *args, **kwargs):
-        """Save the DiplomaticRelation data."""
+    def save(self, *args, **kwargs):  # noqa
         self.full_clean()
         super(DiplomaticRelation, self).save(*args, **kwargs)
 

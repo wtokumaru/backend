@@ -26,6 +26,7 @@ class IsStaffOrSpecificUser(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         """Allow all users to view specific user information."""
+        # TODO: Actually implement this.
         return True
 
 

@@ -32,7 +32,7 @@ class TerritorySerializer(serializers.ModelSerializer):
     geo = GeoField(read_only=True)
 
     def to_internal_value(self, data):
-        """Converts data to GeoJSON."""
+        """Return a dictionary of territory data."""
         ret = {}
 
         # Update ret to include passed in data
