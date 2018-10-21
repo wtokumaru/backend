@@ -1,8 +1,11 @@
 from rest_framework import viewsets, permissions
 
 from .models import PoliticalEntity, Territory, DiplomaticRelation
-from .serializers import (PoliticalEntitySerializer, TerritorySerializer,
-                          DiplomaticRelationSerializer)
+from .serializers import (
+    PoliticalEntitySerializer,
+    TerritorySerializer,
+    DiplomaticRelationSerializer,
+)
 from .filters import TerritoryFilter
 
 
@@ -11,7 +14,7 @@ class PoliticalEntityViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     queryset = PoliticalEntity.objects.all()
     serializer_class = PoliticalEntitySerializer
-    lookup_field = 'url_id'
+    lookup_field = "url_id"
 
     # TODO use request.user to update revision table
 
